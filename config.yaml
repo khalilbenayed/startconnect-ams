@@ -1,0 +1,15 @@
+local:
+  postgres:
+    host: localhost
+    port: 5432
+    name: ams_local
+    user: startconnect_local
+    password:
+
+test:
+  postgres:
+    host: localhost
+    port: 5432
+    name: unit_test
+    user: unit_test
+    password:

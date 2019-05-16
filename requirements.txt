@@ -1,2 +1,5 @@
-flask
-flask_restful
+pyyaml==5.1
+flask==1.0.2
+flask_restful==0.3.7
+peewee==3.9.5
+psycopg2==2.8

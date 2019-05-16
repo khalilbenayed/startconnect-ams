@@ -1,4 +1,4 @@
-from hello_world import HelloWorld
+from resources.hello_world import HelloWorld
 
 __all__ = [
     "HelloWorld",
