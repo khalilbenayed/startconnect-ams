@@ -8,6 +8,8 @@ from peewee import (
     DateTimeField
 )
 
+STUDENT_STATES = ['TEST', 'ACTIVE', 'INACTIVE']
+
 
 class Student(BaseModel):
     """
@@ -25,6 +27,9 @@ class Student(BaseModel):
     :param password: Password of the student
     :type password: str
 
+    :param state: State of the student. Should be an enum value of the above
+    :type state: str
+
     :param created: Time of creation of the row
     :type created: str
     """
@@ -33,5 +38,6 @@ class Student(BaseModel):
     last_name = CharField()
     password = CharField()
     email = CharField()
+    state = CharField()
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())
