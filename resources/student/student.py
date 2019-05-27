@@ -7,6 +7,7 @@ from flask_restful import (
 from models import Student
 
 student_fields = {
+    'id': fields.Integer,
     'first_name': fields.String,
     'last_name': fields.String,
     'email': fields.String,
@@ -14,7 +15,7 @@ student_fields = {
 }
 
 
-class Student(Resource):
+class StudentResource(Resource):
     @marshal_with(student_fields)
     def post(self):
         parser = reqparse.RequestParser()

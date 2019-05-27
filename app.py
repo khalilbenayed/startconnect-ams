@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_restful import Api
-from resources.student import add_student_resources
+from resources import (
+    add_student_resources,
+    add_company_resources,
+)
 from utils.database_utils import (
     create_tables,
 )
@@ -13,6 +16,7 @@ def create_app(config_name):
 
     # register resources to the api
     add_student_resources(api)
+    add_company_resources(api)
 
     # create all tables if needed before first request
     app.before_first_request(create_tables)

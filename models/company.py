@@ -56,7 +56,7 @@ class Company(BaseModel):
     """
     id = AutoField()  # Primary key
     company_name = CharField()
-    email = CharField()
+    email = CharField(unique=True)
     password = CharField()
     address_1 = CharField()
     address_2 = CharField(null=True)
