@@ -1,6 +1,7 @@
 from models import (
     pg_db as database,
     Student,
+    Company,
 )
 
 
@@ -13,4 +14,7 @@ def close_database_connection():
 
 
 def create_tables():
-    database.create_tables([Student])
+    database.create_tables([
+        Student,
+        Company,
+    ])

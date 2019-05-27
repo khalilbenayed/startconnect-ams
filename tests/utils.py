@@ -3,10 +3,11 @@ from functools import wraps
 from peewee import PostgresqlDatabase
 from models import (
     Student,
+    Company,
 )
 
 
-MODELS = (Student, )
+MODELS = (Student, Company, )
 
 
 with open("config.yaml") as cfg_file:

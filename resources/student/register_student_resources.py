@@ -1,9 +1,9 @@
-from .signup import SignUp
+from .student import Student
 
 
 def add_student_resources(api):
     api.add_resource(
-        SignUp,
-        '/api/student/signup',
-        '/api/student/signup/'
+        Student,
+        '/api/student',
+        '/api/student/'
     )

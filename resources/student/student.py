@@ -14,7 +14,7 @@ student_fields = {
 }
 
 
-class SignUp(Resource):
+class Student(Resource):
     @marshal_with(student_fields)
     def post(self):
         parser = reqparse.RequestParser()
