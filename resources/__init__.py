@@ -1,9 +1,9 @@
-from .student import (
-    StudentResource,
+from .students import (
+    StudentsResource,
     add_student_resources,
 )
-from .company import (
-    CompanyResource,
+from .companies import (
+    CompaniesResource,
     add_company_resources,
 )
 
@@ -11,6 +11,6 @@ from .company import (
 __all__ = [
     'add_student_resources',
     'add_company_resources',
-    'StudentResource',
-    'CompanyResource',
+    'StudentsResource',
+    'CompaniesResource',
 ]

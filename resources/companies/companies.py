@@ -30,7 +30,7 @@ student_fields = {
 }
 
 
-class CompanyResource(Resource):
+class CompaniesResource(Resource):
     @marshal_with(student_fields)
     def post(self):
         parser = reqparse.RequestParser()

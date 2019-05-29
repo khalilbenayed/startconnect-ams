@@ -28,5 +28,5 @@ migrator = PostgresqlMigrator(pg_db)
 
 
 migrate(
-    migrator.add_column('student', 'state', CharField(default='TEST'))
+    migrator.add_column('students', 'state', CharField(default='TEST'))
 )

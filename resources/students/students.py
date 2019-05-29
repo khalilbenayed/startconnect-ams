@@ -21,7 +21,7 @@ student_fields = {
 LOGGER = logging.getLogger('student_resource')
 
 
-class StudentResource(Resource):
+class StudentsResource(Resource):
     @marshal_with(student_fields)
     def post(self):
         parser = reqparse.RequestParser()

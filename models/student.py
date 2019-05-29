@@ -13,13 +13,13 @@ STUDENT_STATES = ['TEST', 'ACTIVE', 'INACTIVE']
 
 class Student(BaseModel):
     """
-    Model class for the student table.
+    Model class for the students table.
 
-    :param first_name: First name of the student
-    :param last_name: Last name of the student
-    :param email: Email of the student
-    :param password: Password of the student
-    :param state: State of the student. Should be an enum value of the above
+    :param first_name: First name of the students
+    :param last_name: Last name of the students
+    :param email: Email of the students
+    :param password: Password of the students
+    :param state: State of the students. Should be an enum value of the above
     :param created: Time of creation of the row
     """
     id = AutoField()  # Primary key

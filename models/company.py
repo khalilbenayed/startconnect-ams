@@ -13,19 +13,19 @@ COMPANY_STATES = ['TEST', 'ACTIVE', 'INACTIVE']
 
 class Company(BaseModel):
     """
-    Model class for the company table.
+    Model class for the companies table.
 
-    :param company_name: Name of the company
-    :param email: Email of the company
-    :param address_1: address_1 of the company
-    :param address_2: address_2 of the company
-    :param city: city of the company
-    :param province: province of the company
-    :param zipcode: zipcode of the company
-    :param country: country of the company
-    :param phone: phone of the company
-    :param password: Password of the company
-    :param state: State of the company. Should be an enum value of the above
+    :param company_name: Name of the companies
+    :param email: Email of the companies
+    :param address_1: address_1 of the companies
+    :param address_2: address_2 of the companies
+    :param city: city of the companies
+    :param province: province of the companies
+    :param zipcode: zipcode of the companies
+    :param country: country of the companies
+    :param phone: phone of the companies
+    :param password: Password of the companies
+    :param state: State of the companies. Should be an enum value of the above
     :param created_at: Time of creation of the row
     :param modified_at: Time of last modification of the row
     """

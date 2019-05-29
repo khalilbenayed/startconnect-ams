@@ -1,8 +1,8 @@
-from .company import CompanyResource
+from .companies import CompaniesResource
 from .register_company_resources import add_company_resources
 
 
 __all__ = [
-    'CompanyResource',
+    'CompaniesResource',
     'add_company_resources'
 ]

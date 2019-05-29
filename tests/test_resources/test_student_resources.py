@@ -18,7 +18,7 @@ class StudentResourceTest(unittest.TestCase):
             'state': 'test'
         }
 
-        resp = self.app.post('api/student/', data=test_payload_1)
+        resp = self.app.post('api/students/', data=test_payload_1)
         resp_data = resp.json
         self.assertEqual(resp_data.get('first_name'), test_payload_1.get('first_name'))
         self.assertEqual(resp_data.get('last_name'), test_payload_1.get('last_name'))
