@@ -10,19 +10,23 @@ from flask_restful import (
 )
 from models import Student
 
+LOGGER = logging.getLogger('student_resource')
+
 student_fields = {
     'id': fields.Integer,
     'first_name': fields.String,
     'last_name': fields.String,
     'email': fields.String,
     'state': fields.String,
-    'error_message': fields.String,
 }
-LOGGER = logging.getLogger('student_resource')
+
+students_fields = {
+    'students': fields.List(fields.Nested(student_fields))
+}
 
 
 class StudentsResource(Resource):
-    @marshal_with(student_fields)
+    @marshal_with(dict(error_message=fields.String, **student_fields))
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('first_name', required=True)
@@ -39,3 +43,20 @@ class StudentsResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
+
+    @marshal_with(dict(error_message=fields.String, **students_fields))
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('limit')
+        args = parser.parse_args()
+        students_query = Student.select().limit(args.get('limit'))
+        students = [
+            {
+                'id': student.id,
+                'first_name': student.first_name,
+                'last_name': student.last_name,
+                'email': student.email,
+                'state': student.state,
+            } for student in students_query
+        ]
+        return {'students': students}

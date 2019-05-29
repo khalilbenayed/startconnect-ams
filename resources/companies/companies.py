@@ -13,7 +13,7 @@ from models import Company
 LOGGER = logging.getLogger('company_resource')
 
 
-student_fields = {
+company_fields = {
     'id': fields.String,
     'company_name': fields.String,
     'email': fields.String,
@@ -26,12 +26,15 @@ student_fields = {
     'country': fields.String,
     'phone': fields.String,
     'state': fields.String,
-    'error_message': fields.String,
+}
+
+companies_fields = {
+    'companies': fields.List(fields.Nested(company_fields))
 }
 
 
 class CompaniesResource(Resource):
-    @marshal_with(student_fields)
+    @marshal_with(dict(error_message=fields.String, **company_fields))
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('company_name', required=True)
@@ -54,3 +57,27 @@ class CompaniesResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
+
+    @marshal_with(dict(error_message=fields.String, **companies_fields))
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('limit')
+        args = parser.parse_args()
+        companies_query = Company.select().limit(args.get('limit'))
+        companies = [
+            {
+                'id': company.id,
+                'company_name': company.company_name,
+                'email': company.email,
+                'password': company.password,
+                'address_1': company.address_1,
+                'address_2': company.address_2,
+                'city': company.city,
+                'province': company.province,
+                'zipcode': company.zipcode,
+                'country': company.country,
+                'phone': company.phone,
+                'state': company.state,
+            } for company in companies_query
+        ]
+        return {'companies': companies}
