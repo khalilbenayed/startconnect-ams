@@ -1,3 +1,7 @@
+import logging
+from peewee import (
+    IntegrityError,
+)
 from flask_restful import (
     Resource,
     fields,
@@ -5,6 +9,9 @@ from flask_restful import (
     reqparse,
 )
 from models import Company
+
+LOGGER = logging.getLogger('company_resource')
+
 
 student_fields = {
     'id': fields.String,
@@ -19,6 +26,7 @@ student_fields = {
     'country': fields.String,
     'phone': fields.String,
     'state': fields.String,
+    'error_message': fields.String,
 }
 
 
@@ -38,4 +46,11 @@ class CompanyResource(Resource):
         parser.add_argument('phone', required=True)
         parser.add_argument('state', default='TEST')
         company_args = parser.parse_args()
-        return Company.create(**company_args)
+        try:
+            return Company.create(**company_args)
+        except IntegrityError:
+            error_dict = {
+                'error_message': 'Company with email `{}` already exists'.format(company_args.get('email')),
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400

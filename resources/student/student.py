@@ -1,3 +1,7 @@
+import logging
+from peewee import (
+    IntegrityError,
+)
 from flask_restful import (
     Resource,
     fields,
@@ -11,8 +15,10 @@ student_fields = {
     'first_name': fields.String,
     'last_name': fields.String,
     'email': fields.String,
-    'state': fields.String
+    'state': fields.String,
+    'error_message': fields.String,
 }
+LOGGER = logging.getLogger('student_resource')
 
 
 class StudentResource(Resource):
@@ -25,4 +31,11 @@ class StudentResource(Resource):
         parser.add_argument('password', required=True)
         parser.add_argument('state', default='TEST')
         student_args = parser.parse_args()
-        return Student.create(**student_args)
+        try:
+            return Student.create(**student_args)
+        except IntegrityError:
+            error_dict = {
+                'error_message': 'Student with email `{}` already exists'.format(student_args.get('email')),
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
