@@ -1,6 +1,7 @@
 import logging
 from peewee import (
     IntegrityError,
+    DoesNotExist,
 )
 from flask_restful import (
     Resource,
@@ -31,6 +32,19 @@ company_fields = {
 companies_fields = {
     'companies': fields.List(fields.Nested(company_fields))
 }
+
+
+class CompanyResource(Resource):
+    @marshal_with(dict(error_message=fields.String, **company_fields))
+    def get(self, company_id):
+        try:
+            return Company.get(id=company_id)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': 'Company with id `{}` does not exist'.format(company_id),
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
 
 class CompaniesResource(Resource):

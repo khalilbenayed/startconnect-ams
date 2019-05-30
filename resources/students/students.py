@@ -1,6 +1,7 @@
 import logging
 from peewee import (
     IntegrityError,
+    DoesNotExist,
 )
 from flask_restful import (
     Resource,
@@ -23,6 +24,19 @@ student_fields = {
 students_fields = {
     'students': fields.List(fields.Nested(student_fields))
 }
+
+
+class StudentResource(Resource):
+    @marshal_with(dict(error_message=fields.String, **student_fields))
+    def get(self, student_id):
+        try:
+            return Student.get(id=student_id)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': 'Student with id `{}` does not exist'.format(student_id),
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
 
 class StudentsResource(Resource):

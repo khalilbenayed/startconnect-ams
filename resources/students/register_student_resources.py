@@ -1,4 +1,7 @@
-from .students import StudentsResource
+from .students import (
+    StudentsResource,
+    StudentResource,
+)
 
 
 def add_student_resources(api):
@@ -6,4 +9,9 @@ def add_student_resources(api):
         StudentsResource,
         '/api/students',
         '/api/students/'
+    )
+    api.add_resource(
+        StudentResource,
+        '/api/students/<string:student_id>',
+        '/api/students/<string:student_id>/'
     )
