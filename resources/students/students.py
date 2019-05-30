@@ -26,6 +26,23 @@ students_fields = {
 }
 
 
+class StudentLoginResource(Resource):
+    @marshal_with(dict(error_message=fields.String, **student_fields))
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', required=True)
+        parser.add_argument('password', required=True)
+        login_args = parser.parse_args()
+        try:
+            return Student.get(**login_args)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': 'No student with these credentials exists',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 401
+
+
 class StudentResource(Resource):
     @marshal_with(dict(error_message=fields.String, **student_fields))
     def get(self, student_id):

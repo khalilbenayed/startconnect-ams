@@ -1,6 +1,7 @@
 from .companies import (
     CompaniesResource,
     CompanyResource,
+    CompanyLoginResource,
 )
 
 
@@ -14,4 +15,9 @@ def add_company_resources(api):
         CompanyResource,
         '/api/companies/<string:company_id>',
         '/api/companies/<string:company_id>/'
+    )
+    api.add_resource(
+        CompanyLoginResource,
+        '/api/companies/login',
+        '/api/companies/login/'
     )

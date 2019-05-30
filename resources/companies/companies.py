@@ -34,6 +34,23 @@ companies_fields = {
 }
 
 
+class CompanyLoginResource(Resource):
+    @marshal_with(dict(error_message=fields.String, **company_fields))
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', required=True)
+        parser.add_argument('password', required=True)
+        login_args = parser.parse_args()
+        try:
+            return Company.get(**login_args)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': 'No company with these credentials exists',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 401
+
+
 class CompanyResource(Resource):
     @marshal_with(dict(error_message=fields.String, **company_fields))
     def get(self, company_id):
