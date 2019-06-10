@@ -10,6 +10,7 @@ from flask_restful import (
     reqparse,
 )
 from models import Company
+from utils.password_utils import verify_password
 
 LOGGER = logging.getLogger('company_resource')
 
@@ -42,10 +43,19 @@ class CompanyLoginResource(Resource):
         parser.add_argument('password', required=True)
         login_args = parser.parse_args()
         try:
-            return Company.get(**login_args)
+            company = Company.get(email=login_args.get('email'))
         except DoesNotExist:
             error_dict = {
-                'error_message': 'No company with these credentials exists',
+                'error_message': 'No company with this email exists',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 404
+        is_password_correct = verify_password(company.password, login_args.get('password'))
+        if is_password_correct:
+            return company
+        else:
+            error_dict = {
+                'error_message': 'Incorrect password',
             }
             LOGGER.error(error_dict)
             return error_dict, 401

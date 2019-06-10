@@ -10,6 +10,7 @@ from flask_restful import (
     reqparse,
 )
 from models import Student
+from utils.password_utils import verify_password
 
 LOGGER = logging.getLogger('student_resource')
 
@@ -34,10 +35,20 @@ class StudentLoginResource(Resource):
         parser.add_argument('password', required=True)
         login_args = parser.parse_args()
         try:
-            return Student.get(**login_args)
+            student = Student.get(email=login_args.get('email'))
         except DoesNotExist:
             error_dict = {
-                'error_message': 'No student with these credentials exists',
+                'error_message': 'No student with this email exists',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 404
+        is_password_correct = verify_password(student.password, login_args.get('password'))
+        print(login_args.get('password'))
+        if is_password_correct:
+            return student
+        else:
+            error_dict = {
+                'error_message': 'Incorrect password',
             }
             LOGGER.error(error_dict)
             return error_dict, 401
