@@ -136,16 +136,9 @@ class CompanyJobsResource(Resource):
         parser.add_argument('type')
         args = parser.parse_args()
 
-        if args.get('type') not in JOB_TYPES:
-            error_dict = {
-                'error_message': f'Unknown type: {args.get("type")}',
-            }
-            LOGGER.error(error_dict)
-            return error_dict, 400
-
         # check company exists
         try:
-            Company.get(id=company_id)
+            company = Company.get(id=company_id)
         except DoesNotExist:
             error_dict = {
                 'error_message': f'Company with id {company_id} does not exist',
@@ -153,9 +146,13 @@ class CompanyJobsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        jobs = (Job.select()
-                .where(Job.company == company_id)
-                .limit(args.get('limit')))
-        if 'type' in args:
+        jobs = company.jobs
+        if args.get('type') is not None:
+            if args.get('type') not in JOB_TYPES:
+                error_dict = {
+                    'error_message': f'Unknown type: {args.get("type")}',
+                }
+                LOGGER.error(error_dict)
+                return error_dict, 400
             jobs = jobs.where(Job.type == args.get('type'))
         return {'jobs': jobs}
