@@ -11,6 +11,7 @@ from flask_restful import (
 )
 from models import (
     Job,
+    JOB_TYPES,
 )
 from resources.companies.companies import company_fields
 
@@ -58,6 +59,17 @@ class JobsResource(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('limit')
+        parser.add_argument('type')
         args = parser.parse_args()
+
+        if args.get('type') not in JOB_TYPES:
+            error_dict = {
+                'error_message': f'Unknown type: {args.get("type")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
         jobs = Job.select().limit(args.get('limit'))
+        if 'type' in args:
+            jobs = jobs.where(Job.type == args.get('type'))
         return {'jobs': jobs}

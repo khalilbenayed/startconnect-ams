@@ -133,7 +133,16 @@ class CompanyJobsResource(Resource):
     def get(self, company_id):
         parser = reqparse.RequestParser()
         parser.add_argument('limit')
+        parser.add_argument('type')
         args = parser.parse_args()
+
+        if args.get('type') not in JOB_TYPES:
+            error_dict = {
+                'error_message': f'Unknown type: {args.get("type")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
         # check company exists
         try:
             Company.get(id=company_id)
@@ -147,4 +156,6 @@ class CompanyJobsResource(Resource):
         jobs = (Job.select()
                 .where(Job.company == company_id)
                 .limit(args.get('limit')))
+        if 'type' in args:
+            jobs = jobs.where(Job.type == args.get('type'))
         return {'jobs': jobs}
