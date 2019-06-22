@@ -68,7 +68,7 @@ class CompanyResource(Resource):
             return Company.get(id=company_id)
         except DoesNotExist:
             error_dict = {
-                'error_message': 'Company with id `{}` does not exist'.format(company_id),
+                'error_message': f'Company with id {company_id} does not exist',
             }
             LOGGER.error(error_dict)
             return error_dict, 400
@@ -94,7 +94,7 @@ class CompaniesResource(Resource):
             return Company.create(**company_args)
         except IntegrityError:
             error_dict = {
-                'error_message': 'Company with email `{}` already exists'.format(company_args.get('email')),
+                'error_message': f'Company with email {company_args.get("email")} already exists',
             }
             LOGGER.error(error_dict)
             return error_dict, 400
@@ -104,21 +104,5 @@ class CompaniesResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('limit')
         args = parser.parse_args()
-        companies_query = Company.select().limit(args.get('limit'))
-        companies = [
-            {
-                'id': company.id,
-                'company_name': company.company_name,
-                'email': company.email,
-                'password': company.password,
-                'address_1': company.address_1,
-                'address_2': company.address_2,
-                'city': company.city,
-                'province': company.province,
-                'zipcode': company.zipcode,
-                'country': company.country,
-                'phone': company.phone,
-                'state': company.state,
-            } for company in companies_query
-        ]
+        companies = Company.select().limit(args.get('limit'))
         return {'companies': companies}

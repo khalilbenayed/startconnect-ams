@@ -8,7 +8,7 @@ from peewee import (
     DateTimeField
 )
 
-STUDENT_STATES = ['TEST', 'ACTIVE', 'INACTIVE']
+STUDENT_STATES = {'TEST', 'ACTIVE', 'INACTIVE'}
 
 
 class Student(BaseModel):

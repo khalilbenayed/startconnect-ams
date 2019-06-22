@@ -91,14 +91,5 @@ class StudentsResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('limit')
         args = parser.parse_args()
-        students_query = Student.select().limit(args.get('limit'))
-        students = [
-            {
-                'id': student.id,
-                'first_name': student.first_name,
-                'last_name': student.last_name,
-                'email': student.email,
-                'state': student.state,
-            } for student in students_query
-        ]
+        students = Student.select().limit(args.get('limit'))
         return {'students': students}

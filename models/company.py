@@ -8,7 +8,7 @@ from peewee import (
     DateTimeField
 )
 
-COMPANY_STATES = ['TEST', 'ACTIVE', 'INACTIVE']
+COMPANY_STATES = {'TEST', 'ACTIVE', 'INACTIVE'}
 
 
 class Company(BaseModel):

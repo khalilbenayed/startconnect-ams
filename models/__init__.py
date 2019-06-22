@@ -10,6 +10,11 @@ from models.company import (
     Company,
     COMPANY_STATES,
 )
+from models.job import (
+    Job,
+    JOB_STATES,
+    JOB_TYPES,
+)
 
 __all__ = [
     'pg_db',
@@ -18,4 +23,7 @@ __all__ = [
     'STUDENT_STATES',
     'Company',
     'COMPANY_STATES',
+    'Job',
+    'JOB_STATES',
+    'JOB_TYPES',
 ]
