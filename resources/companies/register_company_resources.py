@@ -3,6 +3,10 @@ from .companies import (
     CompanyResource,
     CompanyLoginResource,
 )
+from .company_jobs import (
+    CompanyJobResource,
+    CompanyJobsResource,
+)
 
 
 def add_company_resources(api):
@@ -20,4 +24,14 @@ def add_company_resources(api):
         CompanyLoginResource,
         '/api/companies/login',
         '/api/companies/login/'
+    )
+    api.add_resource(
+        CompanyJobsResource,
+        '/api/companies/<string:company_id>/jobs',
+        '/api/companies/<string:company_id>/jobs/'
+    )
+    api.add_resource(
+        CompanyJobResource,
+        '/api/companies/<string:company_id>/jobs/<string:job_id>',
+        '/api/companies/<string:company_id>/jobs/<string:job_id>/',
     )

@@ -3,6 +3,10 @@ from .companies import (
     CompanyResource,
     CompanyLoginResource,
 )
+from .company_jobs import (
+    CompanyJobResource,
+    CompanyJobsResource,
+)
 from .register_company_resources import add_company_resources
 
 
@@ -11,4 +15,6 @@ __all__ = [
     'CompaniesResource',
     'CompanyResource',
     'CompanyLoginResource',
+    'CompanyJobResource',
+    'CompanyJobsResource',
 ]
