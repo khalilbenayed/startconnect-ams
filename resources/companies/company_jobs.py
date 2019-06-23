@@ -39,6 +39,7 @@ job_fields = {
 }
 
 jobs_fields = {
+    'total_jobs': fields.Integer,
     'jobs': fields.List(fields.Nested(job_fields))
 }
 
@@ -132,7 +133,8 @@ class CompanyJobsResource(Resource):
     @marshal_with(dict(error_message=fields.String, **jobs_fields))
     def get(self, company_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('limit')
+        parser.add_argument('page_number', type=int)
+        parser.add_argument('number_of_jobs_per_page', type=int)
         parser.add_argument('type')
         args = parser.parse_args()
 
@@ -155,4 +157,10 @@ class CompanyJobsResource(Resource):
                 LOGGER.error(error_dict)
                 return error_dict, 400
             jobs = jobs.where(Job.type == args.get('type'))
-        return {'jobs': jobs}
+        total_jobs = len(jobs)
+        if args.get('page_number') is not None and args.get('number_of_jobs_per_page') is not None:
+            jobs = jobs.paginate(args.get('page_number'), args.get('number_of_jobs_per_page'))
+        return {
+            'total_jobs': total_jobs,
+            'jobs': jobs
+        }
