@@ -6,6 +6,14 @@ local:
     user: startconnect_local
     password:
 
+dev:
+  postgres:
+    host: ec2-174-129-29-101.compute-1.amazonaws.com
+    port: 5432
+    name: delqk2i2ma6bpq
+    user: nimvicmjodpkul
+    password: 5d1a9fd7d7c5aa03d3572840d92866bf5b2922d4d656da8dd8335a39ba2872be
+
 test:
   postgres:
     host: localhost
