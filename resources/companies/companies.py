@@ -9,7 +9,10 @@ from flask_restful import (
     marshal_with,
     reqparse,
 )
-from models import Company
+from models import (
+    Company,
+    COMPANY_STATES,
+)
 from utils.password_utils import verify_password
 
 LOGGER = logging.getLogger('company_resource')
@@ -75,7 +78,36 @@ class CompanyResource(Resource):
 
     @marshal_with(dict(error_message=fields.String, **company_fields))
     def patch(self, company_id):
-        pass
+        parser = reqparse.RequestParser()
+        parser.add_argument('company_name')
+        parser.add_argument('email')
+        parser.add_argument('password')
+        parser.add_argument('address_1')
+        parser.add_argument('address_2',)
+        parser.add_argument('city')
+        parser.add_argument('province')
+        parser.add_argument('zipcode')
+        parser.add_argument('country')
+        parser.add_argument('phone')
+        parser.add_argument('state')
+        company_args = {key: val for key, val in parser.parse_args().items() if val is not None}
+        if company_args.get('state') not in COMPANY_STATES:
+            error_dict = {
+                'error_message': f'Invalid state {company_args.get("state")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        try:
+            company = Company.get(id=company_id)
+            for key, val in company_args.items():
+                setattr(company, key, val)
+            company.save()
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Company with id {company_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
     @marshal_with(dict(error_message=fields.String, **company_fields))
     def delete(self, company_id):
@@ -96,11 +128,18 @@ class CompaniesResource(Resource):
         parser.add_argument('zipcode', required=True)
         parser.add_argument('country', required=True)
         parser.add_argument('phone', required=True)
-        parser.add_argument('state', default='TEST')
+        parser.add_argument('state', default='NOT_VERIFIED')
         company_args = parser.parse_args()
+        if company_args.get('state') not in COMPANY_STATES:
+            error_dict = {
+                'error_message': f'Invalid state {company_args.get("state")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
         try:
             return Company.create(**company_args)
-        except IntegrityError:
+        except IntegrityError as e:
+            print(e)
             error_dict = {
                 'error_message': f'Company with email {company_args.get("email")} already exists',
             }

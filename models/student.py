@@ -27,6 +27,6 @@ class Student(BaseModel):
     last_name = CharField()
     password = CharField()
     email = CharField(unique=True)
-    state = CharField(default='NOT_VERIFIED')
+    state = CharField()
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())

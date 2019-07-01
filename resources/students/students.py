@@ -9,7 +9,10 @@ from flask_restful import (
     marshal_with,
     reqparse,
 )
-from models import Student
+from models import (
+    Student,
+    STUDENT_STATES,
+)
 from utils.password_utils import verify_password
 
 LOGGER = logging.getLogger('student_resource')
@@ -83,8 +86,14 @@ class StudentsResource(Resource):
         parser.add_argument('last_name', required=True)
         parser.add_argument('email', required=True)
         parser.add_argument('password', required=True)
-        parser.add_argument('state', default='TEST')
+        parser.add_argument('state', default='NOT_VERIFIED')
         student_args = parser.parse_args()
+        if student_args.get('state') not in STUDENT_STATES:
+            error_dict = {
+                'error_message': f'Invalid state {student_args.get("state")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
         try:
             return Student.create(**student_args)
         except IntegrityError:

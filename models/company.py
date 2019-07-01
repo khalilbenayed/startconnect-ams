@@ -40,6 +40,6 @@ class Company(BaseModel):
     zipcode = CharField()
     country = CharField()
     phone = CharField()
-    state = CharField(default='NOT_VERIFIED')
+    state = CharField()
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())
