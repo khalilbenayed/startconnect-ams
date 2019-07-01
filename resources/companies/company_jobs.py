@@ -66,6 +66,14 @@ class CompanyJobResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
+    @marshal_with(dict(error_message=fields.String, **job_fields))
+    def patch(self, company_id, job_id):
+        pass
+
+    @marshal_with(dict(error_message=fields.String, **job_fields))
+    def delete(self, company_id, job_id):
+        pass
+
 
 class CompanyJobsResource(Resource):
     @marshal_with(dict(error_message=fields.String, **job_fields))

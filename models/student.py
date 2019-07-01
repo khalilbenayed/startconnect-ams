@@ -8,7 +8,7 @@ from peewee import (
     DateTimeField
 )
 
-STUDENT_STATES = {'TEST', 'ACTIVE', 'INACTIVE'}
+STUDENT_STATES = {'NOT_VERIFIED', 'ACTIVE', 'INACTIVE'}
 
 
 class Student(BaseModel):
@@ -27,6 +27,6 @@ class Student(BaseModel):
     last_name = CharField()
     password = CharField()
     email = CharField(unique=True)
-    state = CharField(default='TEST')
+    state = CharField(default='NOT_VERIFIED')
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())

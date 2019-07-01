@@ -66,6 +66,14 @@ class StudentResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
+    @marshal_with(dict(error_message=fields.String, **student_fields))
+    def patch(self, student_id):
+        pass
+
+    @marshal_with(dict(error_message=fields.String, **student_fields))
+    def delete(self, student_id):
+        pass
+
 
 class StudentsResource(Resource):
     @marshal_with(dict(error_message=fields.String, **student_fields))
@@ -90,6 +98,10 @@ class StudentsResource(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('limit')
+        parser.add_argument('email')
         args = parser.parse_args()
-        students = Student.select().limit(args.get('limit'))
+        students = Student.select()
+        if args.get('email') is not None:
+            students = students.where(Student.email == args.get('email'))
+        students = students.limit(args.get('limit'))
         return {'students': students}

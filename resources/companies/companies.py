@@ -73,6 +73,14 @@ class CompanyResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
+    @marshal_with(dict(error_message=fields.String, **company_fields))
+    def patch(self, company_id):
+        pass
+
+    @marshal_with(dict(error_message=fields.String, **company_fields))
+    def delete(self, company_id):
+        pass
+
 
 class CompaniesResource(Resource):
     @marshal_with(dict(error_message=fields.String, **company_fields))
@@ -103,6 +111,10 @@ class CompaniesResource(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('limit')
+        parser.add_argument('email')
         args = parser.parse_args()
-        companies = Company.select().limit(args.get('limit'))
+        companies = Company.select()
+        if args.get('email') is not None:
+            companies = companies.where(Company.email == args.get('email'))
+        companies = companies.limit(args.get('limit'))
         return {'companies': companies}

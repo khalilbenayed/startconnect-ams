@@ -8,7 +8,7 @@ from peewee import (
     DateTimeField
 )
 
-COMPANY_STATES = {'TEST', 'ACTIVE', 'INACTIVE'}
+COMPANY_STATES = {'NOT_VERIFIED', 'ACTIVE', 'INACTIVE'}
 
 
 class Company(BaseModel):
@@ -40,6 +40,6 @@ class Company(BaseModel):
     zipcode = CharField()
     country = CharField()
     phone = CharField()
-    state = CharField(default='TEST')
+    state = CharField(default='NOT_VERIFIED')
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())
