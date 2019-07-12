@@ -1,0 +1,1 @@
+web: gunicorn startconnect-ams:app
