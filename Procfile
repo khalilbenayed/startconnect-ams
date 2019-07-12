@@ -1,1 +1,1 @@
-web: gunicorn startconnect-ams:app
+web: gunicorn app:app
