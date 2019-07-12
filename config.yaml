@@ -8,11 +8,11 @@ local:
 
 dev:
   postgres:
-    host: ec2-107-22-160-185.compute-1.amazonaws.com
+    host: ec2-174-129-227-205.compute-1.amazonaws.com
     port: 5432
-    name: dfmit72pe4i3r6
-    user: sazfghatoecpmm
-    password: e990294ff3af6cd53a2d5ff76d6ce674387c926f0fcb1023910e7c434759654f
+    name: d9fomasoovosfq
+    user: lujzsilupgqxun
+    password: 45f2533919be82597aab3ad65c68656918ce755f395389e4b4fecd93a1c542c3
 
 test:
   postgres:
