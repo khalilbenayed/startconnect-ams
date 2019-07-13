@@ -71,7 +71,30 @@ class StudentResource(Resource):
 
     @marshal_with(dict(error_message=fields.String, **student_fields))
     def patch(self, student_id):
-        pass
+        parser = reqparse.RequestParser()
+        parser.add_argument('first_name')
+        parser.add_argument('last_name')
+        parser.add_argument('email')
+        parser.add_argument('password')
+        parser.add_argument('state')
+        student_args = {key: val for key, val in parser.parse_args().items() if val is not None}
+        if student_args.get('state') not in STUDENT_STATES:
+            error_dict = {
+                'error_message': f'Invalid state {student_args.get("state")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        try:
+            student = Student.get(id=student_id)
+            for key, val in student_args.items():
+                setattr(student, key, val)
+            student.save()
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Company with id {student_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
     @marshal_with(dict(error_message=fields.String, **student_fields))
     def delete(self, student_id):
