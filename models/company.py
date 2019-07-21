@@ -33,13 +33,25 @@ class Company(BaseModel):
     company_name = CharField()
     email = CharField(unique=True)
     password = CharField()
-    address_1 = CharField()
+    address_1 = CharField(null=True)
     address_2 = CharField(null=True)
-    city = CharField()
-    province = CharField()
-    zipcode = CharField()
-    country = CharField()
-    phone = CharField()
-    state = CharField()
+    city = CharField(null=True)
+    province = CharField(null=True)
+    zipcode = CharField(null=True)
+    country = CharField(null=True)
+    phone = CharField(null=True)
+    state = CharField(null=True)
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())
+
+    def has_address(self):
+        return (
+            self.address_1 is not None and
+            self.city is not None and
+            self.province is not None and
+            self.zipcode is not None and
+            self.country is not None
+        )
+
+    def is_active(self):
+        return self.state == 'ACTIVE'

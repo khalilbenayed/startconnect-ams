@@ -97,13 +97,27 @@ class CompanyJobsResource(Resource):
 
         # check company exists
         try:
-            Company.get(id=company_id)
+            company = Company.get(id=company_id)
         except DoesNotExist:
             error_dict = {
                 'error_message': f'Company with id {company_id} does not exist',
             }
             LOGGER.error(error_dict)
             return error_dict, 400
+
+        if company.has_address() is False:
+            error_dict = {
+                'error_message': f'Account for company with id {company_id} does not have an address.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
+
+        if company.is_active() is False:
+            error_dict = {
+                'error_message': f'Account for company with id {company_id} is not active.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
 
         # check type is valid
         if job_args.get('type') not in JOB_TYPES:
@@ -136,7 +150,14 @@ class CompanyJobsResource(Resource):
                 LOGGER.error(error_dict)
                 return error_dict, 400
 
-        return Job.create(company=company_id, **job_args)
+        try:
+            return Job.create(company=company_id, **job_args)
+        except IntegrityError as e:
+            error_dict = {
+                'error_message': e,
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
     @marshal_with(dict(error_message=fields.String, **jobs_fields))
     def get(self, company_id):

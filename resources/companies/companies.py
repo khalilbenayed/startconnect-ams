@@ -83,7 +83,7 @@ class CompanyResource(Resource):
         parser.add_argument('email')
         parser.add_argument('password')
         parser.add_argument('address_1')
-        parser.add_argument('address_2',)
+        parser.add_argument('address_2')
         parser.add_argument('city')
         parser.add_argument('province')
         parser.add_argument('zipcode')
@@ -102,6 +102,7 @@ class CompanyResource(Resource):
             for key, val in company_args.items():
                 setattr(company, key, val)
             company.save()
+            return company
         except DoesNotExist:
             error_dict = {
                 'error_message': f'Company with id {company_id} does not exist',
@@ -121,13 +122,13 @@ class CompaniesResource(Resource):
         parser.add_argument('company_name', required=True)
         parser.add_argument('email', required=True)
         parser.add_argument('password', required=True)
-        parser.add_argument('address_1', required=True)
-        parser.add_argument('address_2', required=False)
-        parser.add_argument('city', required=True)
-        parser.add_argument('province', required=True)
-        parser.add_argument('zipcode', required=True)
-        parser.add_argument('country', required=True)
-        parser.add_argument('phone', required=True)
+        parser.add_argument('address_1')
+        parser.add_argument('address_2')
+        parser.add_argument('city')
+        parser.add_argument('province')
+        parser.add_argument('zipcode')
+        parser.add_argument('country')
+        parser.add_argument('phone')
         parser.add_argument('state', default='NOT_VERIFIED')
         company_args = parser.parse_args()
         if company_args.get('state') not in COMPANY_STATES:
@@ -139,9 +140,8 @@ class CompaniesResource(Resource):
         try:
             return Company.create(**company_args)
         except IntegrityError as e:
-            print(e)
             error_dict = {
-                'error_message': f'Company with email {company_args.get("email")} already exists',
+                'error_message': e,
             }
             LOGGER.error(error_dict)
             return error_dict, 400

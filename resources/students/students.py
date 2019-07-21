@@ -121,7 +121,7 @@ class StudentsResource(Resource):
             return Student.create(**student_args)
         except IntegrityError:
             error_dict = {
-                'error_message': 'Student with email `{}` already exists'.format(student_args.get('email')),
+                'error_message': e,
             }
             LOGGER.error(error_dict)
             return error_dict, 400

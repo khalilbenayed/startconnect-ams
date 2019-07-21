@@ -39,6 +39,8 @@ app, api = create_app(__name__)
 
 @app.before_request
 def authorize_token():
+    if os.environ['TEST']:
+        return
     try:
         auth_header = request.headers.get("Authorization")
         if "Bearer" in auth_header:
