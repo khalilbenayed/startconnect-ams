@@ -3,6 +3,10 @@ from .students import (
     StudentResource,
     StudentLoginResource,
 )
+from .student_documents import (
+    StudentDocumentsResource,
+    StudentDocumentResource
+)
 
 
 def add_student_resources(api):
@@ -20,4 +24,14 @@ def add_student_resources(api):
         StudentLoginResource,
         '/api/students/login',
         '/api/students/login/'
+    )
+    api.add_resource(
+        StudentDocumentsResource,
+        '/api/students/<string:student_id>/student_documents',
+        '/api/students/<string:student_id>/student_documents/'
+    )
+    api.add_resource(
+        StudentDocumentResource,
+        '/api/students/<string:student_id>/student_documents/<string:document_id>',
+        '/api/students/<string:student_id>/student_documents/<string:document_id>/'
     )

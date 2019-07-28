@@ -15,6 +15,11 @@ from models.job import (
     JOB_STATES,
     JOB_TYPES,
 )
+from models.student_documents import (
+    StudentDocument,
+    DOCUMENT_TYPES,
+)
+
 
 __all__ = [
     'pg_db',
@@ -26,4 +31,6 @@ __all__ = [
     'Job',
     'JOB_STATES',
     'JOB_TYPES',
+    'StudentDocument',
+    'DOCUMENT_TYPES',
 ]

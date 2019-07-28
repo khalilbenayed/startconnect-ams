@@ -30,3 +30,6 @@ class Student(BaseModel):
     state = CharField()
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())
+
+    def is_active(self):
+        return self.state == 'ACTIVE'

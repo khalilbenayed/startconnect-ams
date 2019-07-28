@@ -3,6 +3,7 @@ from models import (
     Student,
     Company,
     Job,
+    StudentDocument,
 )
 
 
@@ -19,4 +20,5 @@ def create_tables():
         Student,
         Company,
         Job,
+        StudentDocument,
     ])
