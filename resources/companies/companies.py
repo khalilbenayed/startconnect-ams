@@ -22,7 +22,6 @@ company_fields = {
     'id': fields.String,
     'company_name': fields.String,
     'email': fields.String,
-    'password': fields.String,
     'address_1': fields.String,
     'address_2': fields.String,
     'city': fields.String,
