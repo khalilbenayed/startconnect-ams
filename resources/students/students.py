@@ -119,12 +119,14 @@ class StudentsResource(Resource):
             return error_dict, 400
         try:
             return Student.create(**student_args)
-        except IntegrityError:
+        except IntegrityError as e:
             error_dict = {
                 'error_message': e,
             }
             LOGGER.error(error_dict)
             return error_dict, 400
+        except Exception as e:
+            LOGGER.error(e)
 
     @marshal_with(dict(error_message=fields.String, **students_fields))
     def get(self):

@@ -144,6 +144,8 @@ class CompaniesResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
+        except Exception as e:
+            LOGGER.error(e)
 
     @marshal_with(dict(error_message=fields.String, **companies_fields))
     def get(self):
