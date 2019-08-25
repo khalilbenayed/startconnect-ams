@@ -14,6 +14,7 @@ from models import (
     Company,
     Job,
     JOB_TYPES,
+    JOB_STATES
 )
 from resources.companies.companies import company_fields
 
@@ -66,18 +67,46 @@ class CompanyJobResource(Resource):
     @marshal_with(dict(error_message=fields.String, **job_fields))
     def patch(self, company_id, job_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('title', required=True)
-        parser.add_argument('description', required=True)
-        parser.add_argument('category')
-        parser.add_argument('state', default='NEW')
-        parser.add_argument('type', required=True)
-        parser.add_argument('n_positions', required=True, type=int)
-        parser.add_argument('duration', required=True)
+        parser.add_argument('title')
+        parser.add_argument('description')
+        parser.add_argument('state')
+        parser.add_argument('n_positions', type=int)
+        parser.add_argument('duration')
         parser.add_argument('start_date', type=int)
         parser.add_argument('expiry_date', type=int)
-        parser.add_argument('compensation', required=True)
+        parser.add_argument('compensation')
         parser.add_argument('city')
-        job_args = parser.parse_args()
+        job_args = {key: val for key, val in parser.parse_args().items() if val is not None}
+        if len(job_args) == 0:
+            error_dict = {
+                'error_message': f'Empty payload',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        if 'state' in job_args and job_args.get('state') not in JOB_STATES:
+            error_dict = {
+                'error_message': f'Invalid state {job_args.get("state")}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        try:
+            job = Job.get(id=job_id)
+            if job.company.id != int(company_id):
+                error_dict = {
+                    'error_message': f'Job with id {job_id} does not exist for company {company_id}',
+                }
+                LOGGER.error(error_dict)
+                return error_dict, 400
+            for key, val in job_args.items():
+                setattr(job, key, val)
+            job.save()
+            return job
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Job with id {job_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
     @marshal_with(dict(error_message=fields.String, **job_fields))
     def delete(self, company_id, job_id):

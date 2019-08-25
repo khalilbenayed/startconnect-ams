@@ -26,14 +26,11 @@ job_fields = {
     'type': fields.String,
     'state': fields.String,
     'n_positions': fields.Integer,
-    'duration': fields.Integer,
+    'duration': fields.String,
     'start_date': fields.DateTime,
     'expiry_date': fields.DateTime,
-    'quote': fields.Integer,
-    'hourly_wage': fields.Integer,
-    'weekly_hours': fields.Integer,
-    'total_hours': fields.Integer,
-    'due_date': fields.DateTime,
+    'city': fields.String,
+    'compensation': fields.String,
 }
 
 jobs_fields = {

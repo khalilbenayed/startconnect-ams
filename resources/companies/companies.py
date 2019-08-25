@@ -90,7 +90,13 @@ class CompanyResource(Resource):
         parser.add_argument('phone')
         parser.add_argument('state')
         company_args = {key: val for key, val in parser.parse_args().items() if val is not None}
-        if company_args.get('state') not in COMPANY_STATES:
+        if len(company_args) == 0:
+            error_dict = {
+                'error_message': f'Empty payload',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        if 'state' in company_args and company_args.get('state') not in COMPANY_STATES:
             error_dict = {
                 'error_message': f'Invalid state {company_args.get("state")}',
             }

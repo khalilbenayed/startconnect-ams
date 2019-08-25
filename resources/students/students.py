@@ -78,7 +78,13 @@ class StudentResource(Resource):
         parser.add_argument('password')
         parser.add_argument('state')
         student_args = {key: val for key, val in parser.parse_args().items() if val is not None}
-        if student_args.get('state') not in STUDENT_STATES:
+        if len(student_args) == 0:
+            error_dict = {
+                'error_message': f'Empty payload',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        if 'state' in student_args and student_args.get('state') not in STUDENT_STATES:
             error_dict = {
                 'error_message': f'Invalid state {student_args.get("state")}',
             }
@@ -89,9 +95,10 @@ class StudentResource(Resource):
             for key, val in student_args.items():
                 setattr(student, key, val)
             student.save()
+            return student
         except DoesNotExist:
             error_dict = {
-                'error_message': f'Company with id {student_id} does not exist',
+                'error_message': f'Student with id {student_id} does not exist',
             }
             LOGGER.error(error_dict)
             return error_dict, 400
