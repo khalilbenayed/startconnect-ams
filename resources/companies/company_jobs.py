@@ -28,14 +28,11 @@ job_fields = {
     'type': fields.String,
     'state': fields.String,
     'n_positions': fields.Integer,
-    'duration': fields.Integer,
+    'duration': fields.String,
     'start_date': fields.DateTime,
     'expiry_date': fields.DateTime,
-    'quote': fields.Integer,
-    'hourly_wage': fields.Integer,
-    'weekly_hours': fields.Integer,
-    'total_hours': fields.Integer,
-    'due_date': fields.DateTime,
+    'city': fields.String,
+    'compensation': fields.String,
 }
 
 jobs_fields = {
@@ -81,18 +78,15 @@ class CompanyJobsResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('title', required=True)
         parser.add_argument('description', required=True)
-        parser.add_argument('category', required=True)
+        parser.add_argument('category')
         parser.add_argument('state', default='NEW')
         parser.add_argument('type', required=True)
         parser.add_argument('n_positions', required=True, type=int)
-        parser.add_argument('duration', required=True, type=int)
-        parser.add_argument('start_date', required=True, type=int)
-        parser.add_argument('expiry_date', required=True, type=int)
-        parser.add_argument('quote', type=int)
-        parser.add_argument('hourly_wage', type=int)
-        parser.add_argument('weekly_hours', type=int)
-        parser.add_argument('total_hours', type=int)
-        parser.add_argument('due_date', type=int)
+        parser.add_argument('duration', required=True)
+        parser.add_argument('start_date', type=int)
+        parser.add_argument('expiry_date', type=int)
+        parser.add_argument('compensation', required=True)
+        parser.add_argument('city')
         job_args = parser.parse_args()
 
         # check company exists
@@ -112,12 +106,12 @@ class CompanyJobsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 403
 
-        if company.is_active() is False:
-            error_dict = {
-                'error_message': f'Account for company with id {company_id} is not active.',
-            }
-            LOGGER.error(error_dict)
-            return error_dict, 403
+        # if company.is_active() is False:
+        #     error_dict = {
+        #         'error_message': f'Account for company with id {company_id} is not active.',
+        #     }
+        #     LOGGER.error(error_dict)
+        #     return error_dict, 403
 
         # check type is valid
         if job_args.get('type') not in JOB_TYPES:
@@ -128,27 +122,12 @@ class CompanyJobsResource(Resource):
             return error_dict, 400
 
         # convert timestamps to datetime
-        job_args['start_date'] = datetime.datetime.fromtimestamp(job_args.get('start_date'))
-        job_args['expiry_date'] = datetime.datetime.fromtimestamp(job_args.get('expiry_date'))
+        # job_args['start_date'] = datetime.datetime.fromtimestamp(job_args.get('start_date'))
+        # job_args['expiry_date'] = datetime.datetime.fromtimestamp(job_args.get('expiry_date'))
 
-        # check extra parameters by job type
-        if job_args.get('type') == 'CONTRACT':
-            # require quote, total hours and due date
-            if not ('quote' in job_args and 'total_hours' in job_args and 'due_date' in job_args):
-                error_dict = {
-                    'error_message': 'Must specify quote, total hours and due date for contract jobs.',
-                }
-                LOGGER.error(error_dict)
-                return error_dict, 400
-            job_args['due_date'] = datetime.datetime.fromtimestamp(job_args.get('due_date'))
-        elif job_args.get('type') == 'PAID_INTERNSHIP':
-            # require hourly wage and weekly hours
-            if not ('hourly_wage' in job_args and 'weekly_hours' in job_args):
-                error_dict = {
-                    'error_message': 'Must specify hourly wage and weekly hours for internship jobs.',
-                }
-                LOGGER.error(error_dict)
-                return error_dict, 400
+        # if city is none use city in address by default
+        if job_args.get('city') is None:
+            job_args['city'] = company.city
 
         try:
             return Job.create(company=company_id, **job_args)
