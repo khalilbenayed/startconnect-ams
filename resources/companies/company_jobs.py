@@ -65,7 +65,19 @@ class CompanyJobResource(Resource):
 
     @marshal_with(dict(error_message=fields.String, **job_fields))
     def patch(self, company_id, job_id):
-        pass
+        parser = reqparse.RequestParser()
+        parser.add_argument('title', required=True)
+        parser.add_argument('description', required=True)
+        parser.add_argument('category')
+        parser.add_argument('state', default='NEW')
+        parser.add_argument('type', required=True)
+        parser.add_argument('n_positions', required=True, type=int)
+        parser.add_argument('duration', required=True)
+        parser.add_argument('start_date', type=int)
+        parser.add_argument('expiry_date', type=int)
+        parser.add_argument('compensation', required=True)
+        parser.add_argument('city')
+        job_args = parser.parse_args()
 
     @marshal_with(dict(error_message=fields.String, **job_fields))
     def delete(self, company_id, job_id):
@@ -99,12 +111,12 @@ class CompanyJobsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        if company.has_address() is False:
-            error_dict = {
-                'error_message': f'Account for company with id {company_id} does not have an address.',
-            }
-            LOGGER.error(error_dict)
-            return error_dict, 403
+        # if company.has_address() is False:
+        #     error_dict = {
+        #         'error_message': f'Account for company with id {company_id} does not have an address.',
+        #     }
+        #     LOGGER.error(error_dict)
+        #     return error_dict, 403
 
         # if company.is_active() is False:
         #     error_dict = {
