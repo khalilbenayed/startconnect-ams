@@ -174,7 +174,7 @@ class StudentApplicationsResource(Resource):
 
         try:
             return Application.create(
-                student=student_id,
+                student=student.id,
                 job=job.id,
                 resume=resume.id,
                 cover_letter=cover_letter.id if cover_letter is not None else None,
