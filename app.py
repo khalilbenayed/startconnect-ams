@@ -39,7 +39,7 @@ app, api = create_app(__name__)
 
 @app.before_request
 def authorize_token():
-    if os.environ.get('TEST') is True:
+    if os.environ.get('TEST') == 'true':
         return
     try:
         auth_header = request.headers.get("Authorization")

@@ -19,6 +19,10 @@ from models.student_documents import (
     StudentDocument,
     DOCUMENT_TYPES,
 )
+from models.application import (
+    Application,
+    APPLICATION_STATES,
+)
 
 
 __all__ = [
@@ -33,4 +37,6 @@ __all__ = [
     'JOB_TYPES',
     'StudentDocument',
     'DOCUMENT_TYPES',
+    'Application',
+    'APPLICATION_STATES',
 ]

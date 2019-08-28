@@ -18,9 +18,10 @@ from models import (
     DOCUMENT_TYPES,
 )
 from resources.students.students import student_fields
+from utils.document_utils import create_document
 
 
-LOGGER = logging.getLogger('student_resume_resource')
+LOGGER = logging.getLogger('student_document_resource')
 
 document_fields = {
     'id': fields.Integer,
@@ -85,35 +86,13 @@ class StudentDocumentsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 403
 
-        # check type is valid
-        if document_args.get('document_type') not in DOCUMENT_TYPES:
-            error_dict = {
-                'error_message': f'Unknown document type: {job_args.get("type")}',
-            }
-            LOGGER.error(error_dict)
-            return error_dict, 400
-
         document = document_args.get('document')
-        # check file extension is pdf
-        document_name, extension = document.filename.rsplit('.', 1)
-        if extension.lower() != 'pdf':
-            error_dict = {
-                'error_message': f'Document type is not pdf: {document.filename.rsplit(".", 1)[1].lower()}',
-            }
-            LOGGER.error(error_dict)
-            return error_dict, 400
-
-        if document_args.get('document_name') is not None:
-            document_name = document_args.get('document_name')
-
-        document_key = uuid.uuid1()
-        document.filename = f'{document_key}.pdf'
         try:
-            student_document = StudentDocument.create(
-                student=student_id,
-                document_name=document_name,
-                document_type=document_args.get('document_type'),
-                document_key=document.filename
+            return create_document(
+                student_id,
+                document,
+                document_args.get('document_type'),
+                document_args.get('document_name')
             )
         except IntegrityError as e:
             error_dict = {
@@ -121,13 +100,6 @@ class StudentDocumentsResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
-
-        # save file (rn in filesystem)
-        # TODO: S3 bucket
-        document.save(f'tmp/{document.filename}')
-        document.close()
-
-        return student_document
 
     @marshal_with(dict(error_message=fields.String, **documents_fields))
     def get(self, student_id):
