@@ -65,6 +65,11 @@ class StudentApplicationsResource(Resource):
         parser.add_argument('transcript', type=werkzeug.datastructures.FileStorage, location='files')
         application_args = parser.parse_args()
 
+        job_id = application_args.get('job_id')
+        resume_id = application_args.get('resume_id')
+        cover_letter_id = application_args.get('cover_letter_id')
+        transcript_id = application_args.get('transcript_id')
+
         # check student exists
         try:
             student = Student.get(id=student_id)
@@ -75,18 +80,30 @@ class StudentApplicationsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        # check student exists
+        # check job exists
         try:
-            job = Job.get(id=application_args.get('job_id'))
+            job = Job.get(id=job_id)
         except DoesNotExist:
             error_dict = {
-                'error_message': f'Job with id {application_args.get("job_id")} does not exist',
+                'error_message': f'Job with id {job_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
+        # student didn't already apply for the same job
+        count_applications = (Application
+                              .select()
+                              .where((Application.job == job_id) & (Application.student == student_id))
+                              .count())
+        if count_applications != 0:
+            error_dict = {
+                'error_message': f'Student {student_id} already applied for job {job_id}',
             }
             LOGGER.error(error_dict)
             return error_dict, 400
 
         resume, cover_letter, transcript = None, None, None
-        if application_args.get('resume_id') is None:
+        if resume_id is None:
             resume_file = application_args.get('resume')
             if resume_file is None:
                 error_dict = {
@@ -105,15 +122,15 @@ class StudentApplicationsResource(Resource):
                 return error_dict, 400
         else:
             try:
-                resume = StudentDocument.get(id=application_args.get('resume_id'))
+                resume = StudentDocument.get(id=resume_id)
             except DoesNotExist:
                 error_dict = {
-                    'error_message': f'Document with id {application_args.get("resume_id")} does not exist',
+                    'error_message': f'Document with id {resume_id} does not exist',
                 }
                 LOGGER.error(error_dict)
                 return error_dict, 400
 
-        if application_args.get('cover_letter_id') is None:
+        if cover_letter_id is None:
             cover_letter_file = application_args.get('cover_letter')
             if cover_letter_file is not None:
                 try:
@@ -126,15 +143,15 @@ class StudentApplicationsResource(Resource):
                     return error_dict, 400
         else:
             try:
-                cover_letter = StudentDocument.get(id=application_args.get('cover_letter_id'))
+                cover_letter = StudentDocument.get(id=cover_letter_id)
             except DoesNotExist:
                 error_dict = {
-                    'error_message': f'Document with id {application_args.get("cover_letter_id")} does not exist',
+                    'error_message': f'Document with id {cover_letter_id} does not exist',
                 }
                 LOGGER.error(error_dict)
                 return error_dict, 400
 
-        if application_args.get('transcript_id') is None:
+        if transcript_id is None:
             transcript_file = application_args.get('transcript')
             if transcript_file is None:
                 try:
@@ -147,10 +164,10 @@ class StudentApplicationsResource(Resource):
                     return error_dict, 400
         else:
             try:
-                transcript = StudentDocument.get(id=application_args.get('transcript_id'))
+                transcript = StudentDocument.get(id=transcript_id)
             except DoesNotExist:
                 error_dict = {
-                    'error_message': f'Document with id {application_args.get("transcript_id")} does not exist',
+                    'error_message': f'Document with id {transcript_id} does not exist',
                 }
                 LOGGER.error(error_dict)
                 return error_dict, 400
