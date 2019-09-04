@@ -13,7 +13,7 @@ from peewee import (
     ForeignKeyField,
 )
 
-APPLICATION_STATES = {'NEW'}
+APPLICATION_STATES = {'NEW', 'CANCELLED'}
 
 
 class Application(BaseModel):

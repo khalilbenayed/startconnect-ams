@@ -4,7 +4,6 @@ from peewee import (
     IntegrityError,
     DoesNotExist,
 )
-from flask import send_from_directory
 from flask_restful import (
     Resource,
     fields,
@@ -15,7 +14,8 @@ from models import (
     Student,
     StudentDocument,
     Job,
-    Application
+    Application,
+    APPLICATION_STATES
 )
 from resources.students.students import student_fields
 from resources.students.student_documents import document_fields
@@ -30,28 +30,103 @@ application_fields = {
     'student': fields.Nested(student_fields),
     'job': fields.Nested(job_fields),
     'resume': fields.Nested(document_fields),
-    'cover_letter': fields.Nested(document_fields),
-    'transcript': fields.Nested(document_fields),
+    'cover_letter': fields.Nested(document_fields, allow_null=True),
+    'transcript': fields.Nested(document_fields, allow_null=True),
     'state': fields.String,
     'created_at': fields.DateTime
 }
 
 applications_fields = {
     'total_applications': fields.Integer,
-    'applications': fields.List(fields.Nested(document_fields))
+    'applications': fields.List(fields.Nested(application_fields))
 }
 
 
 class StudentApplicationResource(Resource):
     @marshal_with(dict(error_message=fields.String, **application_fields))
     def get(self, student_id, application_id):
-        pass
+        # check student exists
+        try:
+            Student.get(id=student_id)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Student with id {student_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
+        try:
+            return Application.get(id=application_id, student=student_id)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Application with id `{application_id}` does not exist'
+                                 f' for student with id {student_id}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
+    @marshal_with(dict(error_message=fields.String, **application_fields))
+    def patch(self, student_id, application_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('state')
+        application_args = parser.parse_args()
+        state = application_args.get('state')
+
+        if state is None:
+            error_dict = {
+                'error_message': f'Empty payload',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
+        if state not in APPLICATION_STATES:
+            error_dict = {
+                'error_message': f'Invalid state {state}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        try:
+            application = Application.get(id=application_id, student=student_id)
+            application.state = state
+            application.save()
+            return application
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Application with id `{application_id}` does not exist'
+                                 f' for student with id {student_id}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
 
 
 class StudentApplicationsResource(Resource):
     @marshal_with(dict(error_message=fields.String, **applications_fields))
     def get(self, student_id):
-        pass
+        parser = reqparse.RequestParser()
+        parser.add_argument('page_number', type=int)
+        parser.add_argument('number_of_documents_per_page', type=int)
+        args = parser.parse_args()
+
+        # check student exists
+        try:
+            student = Student.get(id=student_id)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Student with id {student_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
+        applications = student.applications
+        total_applications = len(applications)
+        if args.get('page_number') is not None and args.get('number_of_documents_per_page') is not None:
+            applications = applications.paginate(
+                args.get('page_number'),
+                args.get('number_of_documents_per_page'))
+        return {
+            'total_applications': total_applications,
+            'applications': applications
+        }
 
     @marshal_with(dict(error_message=fields.String, **application_fields))
     def post(self, student_id):

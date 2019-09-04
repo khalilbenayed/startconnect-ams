@@ -109,7 +109,7 @@ class StudentDocumentsResource(Resource):
         parser.add_argument('document_type')
         args = parser.parse_args()
 
-        # check company exists
+        # check student exists
         try:
             student = Student.get(id=student_id)
         except DoesNotExist:
