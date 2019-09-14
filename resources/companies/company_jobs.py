@@ -167,7 +167,7 @@ class CompanyJobsResource(Resource):
         # job_args['expiry_date'] = datetime.datetime.fromtimestamp(job_args.get('expiry_date'))
 
         # if city is none use city in address by default
-        if job_args.get('city') is None:
+        if job_args.get('city') is None or job_args.get('city') == '':
             job_args['city'] = company.city
 
         try:
