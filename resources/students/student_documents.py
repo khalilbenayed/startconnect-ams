@@ -57,7 +57,7 @@ class StudentDocumentResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
-        return send_from_directory('tmp/', student_document.document_name, as_attachment=True)
+        return send_from_directory('tmp/', student_document.document_key, as_attachment=True)
 
 
 class StudentDocumentsResource(Resource):
