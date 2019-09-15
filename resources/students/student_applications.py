@@ -233,7 +233,7 @@ class StudentApplicationsResource(Resource):
                 resume=resume.id,
                 cover_letter=cover_letter_id,
                 transcript=transcript_id,
-                state='New'
+                state='NEW'
             )
         except IntegrityError as e:
             error_dict = {
