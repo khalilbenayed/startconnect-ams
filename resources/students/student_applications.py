@@ -1,5 +1,4 @@
 import logging
-import werkzeug
 from peewee import (
     IntegrityError,
     DoesNotExist,
@@ -17,29 +16,12 @@ from models import (
     Application,
     APPLICATION_STATES
 )
-from resources.students.students import student_fields
-from resources.students.student_documents import document_fields
-from resources.companies.company_jobs import job_fields
-from utils.document_utils import create_document
-
+from resources.fields import (
+    application_fields,
+    applications_fields
+)
 
 LOGGER = logging.getLogger('application_resource')
-
-application_fields = {
-    'id': fields.Integer,
-    'student': fields.Nested(student_fields),
-    'job': fields.Nested(job_fields),
-    'resume': fields.Nested(document_fields),
-    'cover_letter': fields.Nested(document_fields, allow_null=True),
-    'transcript': fields.Nested(document_fields, allow_null=True),
-    'state': fields.String,
-    'created_at': fields.DateTime
-}
-
-applications_fields = {
-    'total_applications': fields.Integer,
-    'applications': fields.List(fields.Nested(application_fields))
-}
 
 
 class StudentApplicationResource(Resource):

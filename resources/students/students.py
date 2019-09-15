@@ -14,20 +14,12 @@ from models import (
     STUDENT_STATES,
 )
 from utils.password_utils import verify_password
+from resources.fields import (
+    student_fields,
+    students_fields,
+)
 
 LOGGER = logging.getLogger('student_resource')
-
-student_fields = {
-    'id': fields.Integer,
-    'first_name': fields.String,
-    'last_name': fields.String,
-    'email': fields.String,
-    'state': fields.String,
-}
-
-students_fields = {
-    'students': fields.List(fields.Nested(student_fields))
-}
 
 
 class StudentLoginResource(Resource):

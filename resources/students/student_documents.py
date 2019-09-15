@@ -1,5 +1,4 @@
 import logging
-import uuid
 import werkzeug
 from peewee import (
     IntegrityError,
@@ -17,24 +16,13 @@ from models import (
     StudentDocument,
     DOCUMENT_TYPES,
 )
-from resources.students.students import student_fields
+from resources.fields import (
+    document_fields,
+    documents_fields
+)
 from utils.document_utils import create_document
 
-
 LOGGER = logging.getLogger('student_document_resource')
-
-document_fields = {
-    'id': fields.Integer,
-    'student': fields.Nested(student_fields),
-    'document_name': fields.String,
-    'document_type': fields.String,
-    'document_key': fields.String
-}
-
-documents_fields = {
-    'total_documents': fields.Integer,
-    'documents': fields.List(fields.Nested(document_fields))
-}
 
 
 class StudentDocumentResource(Resource):

@@ -16,30 +16,12 @@ from models import (
     JOB_TYPES,
     JOB_STATES
 )
-from resources.companies.companies import company_fields
+from resources.fields import (
+    job_fields,
+    jobs_fields
+)
 
 LOGGER = logging.getLogger('job_resource')
-
-job_fields = {
-    'id': fields.Integer,
-    'company': fields.Nested(company_fields),
-    'title': fields.String,
-    'category': fields.String,
-    'description': fields.String,
-    'type': fields.String,
-    'state': fields.String,
-    'n_positions': fields.Integer,
-    'duration': fields.String,
-    'start_date': fields.DateTime,
-    'expiry_date': fields.DateTime,
-    'city': fields.String,
-    'compensation': fields.String,
-}
-
-jobs_fields = {
-    'total_jobs': fields.Integer,
-    'jobs': fields.List(fields.Nested(job_fields))
-}
 
 
 class CompanyJobResource(Resource):

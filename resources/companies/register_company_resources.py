@@ -7,6 +7,10 @@ from .company_jobs import (
     CompanyJobResource,
     CompanyJobsResource,
 )
+from .company_job_applications import (
+    CompanyJobApplicationResource,
+    CompanyJobApplicationsResource
+)
 
 
 def add_company_resources(api):
@@ -33,5 +37,15 @@ def add_company_resources(api):
     api.add_resource(
         CompanyJobResource,
         '/api/companies/<string:company_id>/jobs/<string:job_id>',
-        '/api/companies/<string:company_id>/jobs/<string:job_id>/',
+        '/api/companies/<string:company_id>/jobs/<string:job_id>/'
+    )
+    api.add_resource(
+        CompanyJobApplicationsResource,
+        '/api/companies/<string:company_id>/jobs/<string:job_id>/applications',
+        '/api/companies/<string:company_id>/jobs/<string:job_id>/applications/'
+    )
+    api.add_resource(
+        CompanyJobApplicationResource,
+        '/api/companies/<string:company_id>/jobs/<string:job_id>/applications/<string:application_id>',
+        '/api/companies/<string:company_id>/jobs/<string:job_id>/applications/<string:application_id>/'
     )
