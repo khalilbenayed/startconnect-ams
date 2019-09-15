@@ -145,7 +145,7 @@ class StudentApplicationsResource(Resource):
         cover_letter_id = application_args.get('cover_letter_id')
         transcript_id = application_args.get('transcript_id')
 
-        # check student exists
+        # check student exists and is active
         try:
             student = Student.get(id=student_id)
         except DoesNotExist:
@@ -155,7 +155,14 @@ class StudentApplicationsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        # check job exists
+        # if student.is_active() is False:
+        #     error_dict = {
+        #         'error_message': f'Account for student with id {student_id} is not active.',
+        #     }
+        #     LOGGER.error(error_dict)
+        #     return error_dict, 403
+
+        # check job exists and is new
         try:
             job = Job.get(id=job_id)
         except DoesNotExist:
@@ -164,6 +171,22 @@ class StudentApplicationsResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
+
+        if job.is_new() is False:
+            error_dict = {
+                'error_message': f'Job with id {job_id} is expired or deleted.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
+
+        # check company is active
+        # if job.company.is_active() is False:
+        #     error_dict = {
+        #         'error_message': f'Account for company with id {job.company.id} is not active.',
+        #     }
+        #     LOGGER.error(error_dict)
+        #     return error_dict, 403
+
 
         # student didn't already apply for the same job
         count_applications = (Application

@@ -61,7 +61,7 @@ class JobsResource(Resource):
         parser.add_argument('type')
         args = parser.parse_args()
 
-        jobs = Job.select()
+        jobs = Job.select().where(Job.state != 'DELETED')
         if args.get('type') is not None:
             if args.get('type') not in JOB_TYPES:
                 error_dict = {

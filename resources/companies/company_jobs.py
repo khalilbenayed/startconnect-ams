@@ -197,7 +197,7 @@ class CompanyJobsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        jobs = company.jobs
+        jobs = company.jobs.where(Job.state != 'DELETED')
         if args.get('type') is not None:
             if args.get('type') not in JOB_TYPES:
                 error_dict = {

@@ -12,7 +12,7 @@ from peewee import (
     ForeignKeyField,
 )
 
-JOB_STATES = {'NEW'}
+JOB_STATES = {'NEW', 'EXPIRED', 'DELETED'}
 JOB_TYPES = {'VOLUNTEER', 'CONTRACT', 'INTERNSHIP'}
 
 
@@ -32,3 +32,6 @@ class Job(BaseModel):
     city = CharField()
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())
+
+    def is_new(self):
+        return self.state == 'NEW'
