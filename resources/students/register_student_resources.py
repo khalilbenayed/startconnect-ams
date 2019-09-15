@@ -41,11 +41,11 @@ def add_student_resources(api):
     )
     api.add_resource(
         StudentApplicationsResource,
-        '/api/students/<string:student_id>/student_applications',
-        '/api/students/<string:student_id>/student_applications/'
+        '/api/students/<string:student_id>/applications',
+        '/api/students/<string:student_id>/applications/'
     )
     api.add_resource(
         StudentApplicationResource,
-        '/api/students/<string:student_id>/student_applications/<string:application_id>',
-        '/api/students/<string:student_id>/student_applications/<string:application_id>/'
+        '/api/students/<string:student_id>/applications/<string:application_id>',
+        '/api/students/<string:student_id>/applications/<string:application_id>/'
     )
