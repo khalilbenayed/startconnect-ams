@@ -19,7 +19,7 @@ LOGGER = logging.getLogger('company_resource')
 
 
 company_fields = {
-    'id': fields.String,
+    'id': fields.Integer,
     'company_name': fields.String,
     'email': fields.String,
     'address_1': fields.String,
