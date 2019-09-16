@@ -119,7 +119,7 @@ class CompaniesResource(Resource):
         parser.add_argument('zipcode')
         parser.add_argument('country')
         parser.add_argument('phone')
-        parser.add_argument('state', default='NOT_VERIFIED')
+        parser.add_argument('state', default='ACTIVE')
         company_args = parser.parse_args()
         if company_args.get('state') not in COMPANY_STATES:
             error_dict = {
