@@ -16,6 +16,15 @@ dev:
     user: lujzsilupgqxun
     password: 45f2533919be82597aab3ad65c68656918ce755f395389e4b4fecd93a1c542c3
 
+prod:
+  api-key: gXXR5ag6tDhrKgf1AnegQFbbWys/hfxqiop7ySyzNpkvtiGItYiutjleCZe84pjejrlFAqaaLCkll3pD1AfZVw==
+  postgres:
+    host: ec2-50-19-254-63.compute-1.amazonaws.com
+    port: 5432
+    name: dcqknr0orv65n8
+    user: uoartybwkirsgi
+    password: 63fbe04da7cbe8fae4362ca16c4cb284c0a1a1c110fa7f058e5f68789839cfd0
+
 test:
   postgres:
     host: localhost
