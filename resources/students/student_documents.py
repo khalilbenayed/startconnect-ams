@@ -39,6 +39,12 @@ class StudentDocumentResource(Resource):
 
         try:
             student_document = StudentDocument.get(id=document_id, student=student_id)
+            if student_document.state == 'DELETED':
+                error_dict = {
+                    'error_message': f'Document with id `{document_id}` has been deleted',
+                }
+                LOGGER.error(error_dict)
+                return error_dict, 404
         except DoesNotExist:
             error_dict = {
                 'error_message': f'Document with id `{document_id}` does not exist for student with id {student_id}',
@@ -46,6 +52,44 @@ class StudentDocumentResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
         return send_from_directory('tmp/', student_document.document_key, as_attachment=True)
+
+    @marshal_with(dict(error_message=fields.String, **document_fields))
+    def patch(self, student_id, document_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('state')
+        parser.add_argument('document_name')
+        document_args = parser.parse_args()
+
+        # check student exists
+        try:
+            Student.get(id=student_id)
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Student with id {student_id} does not exist',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+
+        try:
+            student_document = StudentDocument.get(id=document_id, student=student_id)
+            if document_args.get('document_name') is not None and document_args.get('document_name') != '':
+                student_document.document_name = document_args.get('document_name')
+            if document_args.get('state') is not None and document_args.get('state') != '':
+                if document_args.get('state') != 'DELETED':
+                    error_dict = {
+                        'error_message': f'Invalid state {document_args.get("state")}',
+                    }
+                    LOGGER.error(error_dict)
+                    return error_dict, 400
+                student_document.state = document_args.get('state')
+            student_document.save()
+        except DoesNotExist:
+            error_dict = {
+                'error_message': f'Document with id `{document_id}` does not exist for student with id {student_id}',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 400
+        return student_document
 
 
 class StudentDocumentsResource(Resource):
@@ -107,7 +151,7 @@ class StudentDocumentsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        documents = student.documents
+        documents = student.documents.where(StudentDocument.state != 'DELETED')
         if args.get('type') is not None:
             if args.get('type') not in DOCUMENT_TYPES:
                 error_dict = {

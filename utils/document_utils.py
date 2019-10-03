@@ -16,7 +16,8 @@ def create_document(student_id, document, document_type, document_default_name=N
         student=student_id,
         document_name=document_name,
         document_type=document_type,
-        document_key=document.filename
+        document_key=document.filename,
+        state='VALID'
     )
 
     # save file (rn in filesystem)

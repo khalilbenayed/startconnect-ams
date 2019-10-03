@@ -13,6 +13,7 @@ from peewee import (
 )
 
 DOCUMENT_TYPES = {'RESUME', 'TRANSCRIPT', 'COVER_LETTER'}
+DOCUMENT_STATES = {'VALID', 'DELETED'}
 
 
 class StudentDocument(BaseModel):
@@ -21,5 +22,6 @@ class StudentDocument(BaseModel):
     document_type = CharField()
     document_name = CharField()
     document_key = CharField(unique=True)
+    state = CharField()
     created_at = DateTimeField(default=datetime.now())
     modified_at = DateTimeField(default=datetime.now())

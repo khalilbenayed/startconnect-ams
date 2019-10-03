@@ -6,7 +6,8 @@ document_fields = {
     'student': fields.Nested(student_fields),
     'document_name': fields.String,
     'document_type': fields.String,
-    'document_key': fields.String
+    'document_key': fields.String,
+    'state': fields.String
 }
 
 documents_fields = {
