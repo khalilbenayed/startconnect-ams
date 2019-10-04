@@ -108,7 +108,7 @@ class StudentsResource(Resource):
         parser.add_argument('last_name', required=True)
         parser.add_argument('email', required=True)
         parser.add_argument('password', required=True)
-        parser.add_argument('state', default='ACTIVE')
+        parser.add_argument('state', default='NOT_VERIFIED')
         student_args = parser.parse_args()
         if student_args.get('state') not in STUDENT_STATES:
             error_dict = {

@@ -122,19 +122,19 @@ class CompanyJobsResource(Resource):
             LOGGER.error(error_dict)
             return error_dict, 400
 
-        # if company.has_address() is False:
-        #     error_dict = {
-        #         'error_message': f'Account for company with id {company_id} does not have an address.',
-        #     }
-        #     LOGGER.error(error_dict)
-        #     return error_dict, 403
+        if company.has_address() is False:
+            error_dict = {
+                'error_message': f'Account for company with id {company_id} does not have an address.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
 
-        # if company.is_active() is False:
-        #     error_dict = {
-        #         'error_message': f'Account for company with id {company_id} is not active.',
-        #     }
-        #     LOGGER.error(error_dict)
-        #     return error_dict, 403
+        if company.is_active() is False:
+            error_dict = {
+                'error_message': f'Account for company with id {company_id} is not active.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
 
         # check type is valid
         if job_args.get('type') not in JOB_TYPES:

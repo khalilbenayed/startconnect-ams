@@ -133,13 +133,12 @@ class StudentApplicationsResource(Resource):
             }
             LOGGER.error(error_dict)
             return error_dict, 400
-
-        # if student.is_active() is False:
-        #     error_dict = {
-        #         'error_message': f'Account for student with id {student_id} is not active.',
-        #     }
-        #     LOGGER.error(error_dict)
-        #     return error_dict, 403
+        if student.is_active() is False:
+            error_dict = {
+                'error_message': f'Account for student with id {student_id} is not active.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
 
         # check job exists and is new
         try:
@@ -159,12 +158,12 @@ class StudentApplicationsResource(Resource):
             return error_dict, 403
 
         # check company is active
-        # if job.company.is_active() is False:
-        #     error_dict = {
-        #         'error_message': f'Account for company with id {job.company.id} is not active.',
-        #     }
-        #     LOGGER.error(error_dict)
-        #     return error_dict, 403
+        if job.company.is_active() is False:
+            error_dict = {
+                'error_message': f'Account for company with id {job.company.id} is not active.',
+            }
+            LOGGER.error(error_dict)
+            return error_dict, 403
 
 
         # student didn't already apply for the same job
